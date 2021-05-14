@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+{% load static %}  
+{% block content %}
+<form class ="container col-25" method="POST" class="post-form">  
+    {% csrf_token %}
+    <h2> Enter Teams</h2>
+    <table style="width: 50%; margin: 20px;" >{{ matchform.as_p }} </table>
+    <button style="padding: 10; margin-left: 20px;" type="submit" class="save btn btn-default">Next</button>  
+</form>
+{% endblock %}

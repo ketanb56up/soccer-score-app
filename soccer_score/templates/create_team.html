@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% load static %}  
+<!-- <link rel="stylesheet" href="{% static 'listcarform.css' %}"> -->
+{% block content %}
+<form class="form-horizontal" method="POST" action="">
+    {% csrf_token %}
+    {{ teamformset.management_form }}
+    {% for form in teamformset %}
+    <h2>Create Teams</h2>
+    <div class="row form-row spacer">
+        <div class="col-2">
+            <label>{{form.team_name.label}}</label>
+        </div>
+        <div class="col-4">
+            <div class="input-group">
+                {{form.team_name}}
+                <div class="input-group-append">
+                    <button class="btn btn-success add-form-row">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="row spacer">
+        <div class="col-4 offset-2">
+            <button type="submit" class="btn btn-block btn-primary">Next</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% load static %}  
+{% block content %}
+<form class="form-horizontal" method="POST" action="">
+    {% csrf_token %}
+    {{ playerformset.management_form }}
+    {% for form in playerformset %}
+        <h2>Enter Players</h2>
+        <div class="row form-row spacer">
+            <div class="col-2">
+                <label>{{form.player_name.label}}</label>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    {{form.player_name}}
+                    {{form.player_team}}
+                    <div class="input-group-append">
+                        <button class="btn btn-success add-form-row">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="row spacer">
+        <div class="col-4 offset-2">
+            <button type="submit" class="btn btn-block btn-primary">Next</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

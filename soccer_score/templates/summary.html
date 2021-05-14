@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% load static %}  
+{% block content %}
+    <div >
+        <h2>Summary</h2>
+        <table>
+            {% if summary %}
+                <tr>
+                    <th>Games Played</th>
+                    <th>Total Points Scored</th>
+                    <th>Total Close Victories</th>
+                </tr>
+          
+                {% for result in summary %}
+                <tr>
+                    <td>{{ result.game_played }}</td>
+                    <td>{{ result.total_points_scored }}</td>
+                    <td>{{ result.total_close_victories }}</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}

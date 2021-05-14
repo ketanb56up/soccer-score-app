@@ -1,0 +1,140 @@
+{% load static %}  
+<html>
+    <head>
+        <meta charset="UTF-8">  
+        <title>Soccer Score</title>
+        <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+        <link rel="stylesheet" href="{% static 'css/home.scss' %}">
+    </head>
+    <body>
+        <!-- Navbar -->
+        <div class="navbar">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'team' %}">New Game</a>
+            <a href="{% url 'summary' %}">Summary</a>
+        </div>
+
+        {% block content %}
+            {% if success %}
+                <h2>Game Created Successfully!!</h2>
+            {% endif %}
+            <div>
+                {% if context %}
+                    <h2>Game Score</h2>
+                    <table>
+                        <tr>
+                            <th>Team</th>
+                            <th>players</th>
+                            <th>Score</th>
+                            <th>Matchs</th>
+                        </tr>
+                  
+                        {% for result in context %}
+                        <tr>
+                            <td>{{result.team}}</td>
+                            <td>
+                                {% for player in result.players %}
+                                    <table>
+                                        <tr>
+                                            <td>{{player}}</td>
+                                        </tr>
+                                    </table>
+                                {%endfor%}
+                            </td>
+                            <td>
+                                {% for rank in result.ranks %}
+                                    <table>
+                                        <tr>
+                                            <td>{{rank}}</td>
+                                        </tr>
+                                    </table>
+                                {%endfor%}
+                            </td>
+                            <td>
+                                {% if result.team1_matchs %}
+                                    {% for match in result.team1_matchs %}
+                                        <table>
+                                            <tr>
+                                                <td>{{match.matchtype}}</td>
+                                            </tr>
+                                        </table>
+                                    {%endfor%}
+                                {% else %}
+                                    {% for match in result.team2_matchs %}
+                                        <table>
+                                            <tr>
+                                                <td>{{match.matchtype}}</td>
+                                            </tr>
+                                        </table>
+                                    {%endfor%}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        {% endblock %}
+    </body>
+    
+    <script type='text/javascript'>
+        function updateElementIndex(el, prefix, ndx) {
+            var id_regex = new RegExp('(' + prefix + '-\\d+)');
+            var replacement = prefix + '-' + ndx;
+            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
+        }
+        function cloneMore(selector, prefix) {
+            var newElement = $(selector).clone(true);
+            var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+            newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+                if ($(this).attr('name') != undefined){
+                    var name = $(this).attr('name').replace('-' + (total-1) + '-', '-' + total + '-');
+                    var id = 'id_' + name;
+                    $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+                }
+            });
+            newElement.find('label').each(function() {
+                var forValue = $(this).attr('for');
+                if (forValue) {
+                  forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+                  $(this).attr({'for': forValue});
+                }
+            });
+            total++;
+            $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+            $(selector).after(newElement);
+            var conditionRow = $('.form-row:not(:last)');
+            conditionRow.find('.btn.add-form-row')
+            .removeClass('btn-success').addClass('btn-danger')
+            .removeClass('add-form-row').addClass('remove-form-row')
+            .html('<span class="glyphicon glyphicon-minus" aria-hidden="true">-</span>');
+            return false;
+        }
+        function deleteForm(prefix, btn) {
+            var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+            if (total > 1){
+                btn.closest('.form-row').remove();
+                var forms = $('.form-row');
+                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+                for (var i=0, formCount=forms.length; i<formCount; i++) {
+                    $(forms.get(i)).find(':input').each(function() {
+                        updateElementIndex(this, prefix, i);
+                    });
+                }
+            }
+            return false;
+        }
+        $(document).on('click', '.add-form-row', function(e){
+            e.preventDefault();
+            cloneMore('.form-row:last', 'form');
+            return false;
+        });
+        $(document).on('click', '.remove-form-row', function(e){
+            e.preventDefault();
+            deleteForm('form', $(this));
+            return false;
+        });
+    </script>
+</html>
